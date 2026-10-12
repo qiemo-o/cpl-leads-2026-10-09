@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// 只加载「可用」文件。未给库表时不生成可执行 SQL。
+// 只加载「可用」或「整理后可用」。未给库表时不生成可执行 SQL。
 // node load_warehouse.js --in=<可用.xlsx> [--db=] [--table=] [--key=phone+email|处理后电话号码]
 //   [--part=dt] [--part-value=YYYY-MM-DD] [--mode=upsert|insert|overwrite]
 //   [--engine=mysql|postgres|clickhouse|generic] [--batch=] [--outdir=] [--exec-cmd=]

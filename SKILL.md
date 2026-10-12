@@ -1,7 +1,7 @@
 ---
 name: CPL用户数据处理
 version: 1.1.0
-description: 清洗 CPL leads。只整理本行里已经有的信息，分成「可用」和「不可用」。可用结果才允许生成入库 SQL。
+description: 清洗 CPL leads。只整理本行里已经有的信息，分成「可用」「整理后可用」「不可用」。前两份才允许生成入库 SQL。
 ---
 
 # CPL用户数据处理 1.1
@@ -13,6 +13,8 @@ npm install
 node scripts/self_check.js
 node scripts/pre_normalize.js <原始.xlsx> --out=<规范化.xlsx>
 node scripts/clean_leads.js <原始.xlsx> --outdir=<目录> --base=<文件名>
+# 产出 <文件名>_可用.xlsx、<文件名>_整理后可用.xlsx、<文件名>_不可用.xlsx
+# 前两份都可以入库，各跑一次：
 node scripts/load_warehouse.js --in=<目录>/<文件名>_可用.xlsx \
   --db=<库> --table=<表> --engine=mysql|postgres|clickhouse|generic --batch=<批次>
 ```

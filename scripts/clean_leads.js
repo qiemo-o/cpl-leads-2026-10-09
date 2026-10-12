@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // 用法: node clean_leads.js <输入.xlsx|csv> [--outdir=DIR] [--base=名]
 // 产出:
-//   <base>_可用.xlsx    整理后能用
-//   <base>_不可用.xlsx  缺字段，或电话、邮箱、地址、州和邮编对不上
+//   <base>_可用.xlsx        本来就能用，没有改字段
+//   <base>_整理后可用.xlsx  整理以后能用
+//   <base>_不可用.xlsx      缺字段，或电话、邮箱、地址、州和邮编对不上
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -75,7 +76,13 @@ function problemRow(a) {
   };
 }
 const problemCols = ['原始行号', '分类', ...SRC, '错误原因', '整理说明', '还原名', '还原姓', '还原州', '还原城市', '还原邮编', '还原电话', '还原邮箱'];
-writeXlsx(path.join(outDir, BASE + '_可用.xlsx'), usable.map((a) => toCleanRecord(a, BASE)), TARGET.concat(['整理说明']));
+const noteOnly = (n) => n.startsWith('城市不是邮编主城市');
+const tidied = (a) => a.repairs.some((n) => !noteOnly(n));
+const ready = usable.filter((a) => !tidied(a));
+const repaired = usable.filter(tidied);
+const cols = TARGET.concat(['整理说明']);
+writeXlsx(path.join(outDir, BASE + '_可用.xlsx'), ready.map((a) => toCleanRecord(a, BASE)), cols);
+writeXlsx(path.join(outDir, BASE + '_整理后可用.xlsx'), repaired.map((a) => toCleanRecord(a, BASE)), cols);
 writeXlsx(path.join(outDir, BASE + '_不可用.xlsx'), unusable.map(problemRow), problemCols);
 
 function tally(list) {
@@ -91,11 +98,13 @@ function tally(list) {
 const summary = {
   input: path.basename(abs),
   rows: items.length,
-  可用: usable.length,
+  可用: ready.length,
+  整理后可用: repaired.length,
   不可用: unusable.length,
   不可用原因: tally(unusable),
   outputs: {
     可用: path.join(outDir, BASE + '_可用.xlsx'),
+    整理后可用: path.join(outDir, BASE + '_整理后可用.xlsx'),
     不可用: path.join(outDir, BASE + '_不可用.xlsx'),
   },
 };
