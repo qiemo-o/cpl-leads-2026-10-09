@@ -1,0 +1,17 @@
+{
+  "name": "cpl-user-skill-fixed",
+  "version": "1.1.0",
+  "private": true,
+  "description": "CPL leads 清洗：只把本行里已经有的信息整理成标准 14 列，并分开「齐全 / 真的不全 / 无法可靠整理」",
+  "scripts": {
+    "check": "node scripts/self_check.js",
+    "pre": "node scripts/pre_normalize.js",
+    "clean": "node scripts/clean_leads.js",
+    "load": "node scripts/load_warehouse.js"
+  },
+  "dependencies": {
+    "xlsx": "0.18.5",
+    "zip-state": "^1.0.2",
+    "zipcodes": "8.0.0"
+  }
+}
